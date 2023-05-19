@@ -1,7 +1,12 @@
 <template>
   <v-navigation-drawer color="grey-lighten-4" modelValue>
     <v-list color="indigo" nav>
-      <v-list-item :ripple="false" :to="item.to" v-for="item in pages">
+      <v-list-item
+        :key="item.to"
+        :ripple="false"
+        :to="item.to"
+        v-for="item in pages"
+      >
         {{ item.title }}
       </v-list-item>
     </v-list>

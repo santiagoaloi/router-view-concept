@@ -1,5 +1,6 @@
 // Composables
 import { createRouter, createWebHistory } from "vue-router";
+import { useAppStore } from "@/store/app";
 
 const routes = [
   // Default layout routes
@@ -44,6 +45,7 @@ const routes = [
       {
         // Path for the Dashboard route (relative to /secure)
         path: "dashboard",
+        meta: { requiresAuth: true },
         // Component to render for the Dashboard route
         component: () => import("@/views/Dashboard.vue"),
       },
@@ -71,6 +73,7 @@ const routes = [
               {
                 // Path for the Profile basic information route (relative to /secure/settings/profile)
                 path: "basic",
+                meta: { requiresAuth: true },
                 // Component to render for the Profile basic information route
                 component: () => import("@/views/ProfileBasic.vue"),
               },
@@ -78,6 +81,7 @@ const routes = [
               {
                 // Path for the Profile integrations route (relative to /secure/settings/profile)
                 path: "integrations",
+                meta: { requiresAuth: true },
                 // Component to render for the Profile integrations route
                 component: () => import("@/views/ProfileIntegrations.vue"),
               },
@@ -87,6 +91,7 @@ const routes = [
           {
             // Path for the Profile security route (relative to /secure/settings)
             path: "security",
+            meta: { requiresAuth: true },
             // Component to render for the Profile security route
             component: () => import("@/views/ProfileSecurity.vue"),
           },
@@ -94,11 +99,30 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: () => import("@/views/NotFound.vue"),
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from) => {
+  //Stores
+  const appStore = useAppStore();
+
+  // Check is the user is logged-in
+  const isLoggedIn = appStore.isLoggedIn;
+
+  // Checks if the destination route requires authentication
+  const requiresAuth = to.matched.some((r) => r.meta.requiresAuth);
+
+  // If the route requires auth and no user is logged-in cancel routing.
+  if (!isLoggedIn && requiresAuth) return false;
 });
 
 export default router;

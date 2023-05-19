@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="d-flex flex-column">
-      <v-col v-for="field in fields" cols="5">
+      <v-col :key="field.label" v-for="field in fields" cols="5">
         <v-text-field
           density="comfortable"
           hide-details

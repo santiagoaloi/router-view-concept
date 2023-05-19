@@ -1,33 +1,54 @@
 <template>
-  <v-container class="fill-height">
-    <v-responsive class="d-flex align-center text-center fill-height">
-      <v-img height="200" src="@/assets/logo.svg" />
-
-      <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
-
-      <h1 class="text-h2 font-weight-bold">Vuetify</h1>
-
-      <div class="py-4" />
-
-      <v-row class="d-flex align-center justify-center">
-        <v-col cols="auto">
-          <v-btn
-            color="primary"
-            to="/secure"
-            min-width="228"
-            size="large"
-            variant="flat"
-          >
-            <v-icon icon="mdi-lock" size="large" start />
-
-            Go to secure layout
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-responsive>
-  </v-container>
+  <v-card
+    width="500"
+    v-if="!appStore.isLoggedIn"
+    class="rounded-lg px-11 pt-5 bg-grey-lighten-5 mx-auto"
+  >
+    <VCardTitle class="text-h5 font-weight-bold my-8"> Sign in </VCardTitle>
+    <VCardSubtitle>Credentials are admin / vuetify </VCardSubtitle>
+    <VCardText>
+      <v-form> </v-form>
+      <v-text-field v-model="loginForm.account" label="Account" />
+      <v-text-field
+        type="password"
+        v-model="loginForm.password"
+        label="Password"
+      />
+      <div class="d-flex justify-end">
+        <v-btn
+          :loading="loading"
+          @click="login()"
+          color="indigo"
+          :ripple="false"
+          >Continue</v-btn
+        >
+      </div>
+    </VCardText>
+  </v-card>
+  <isLoggedIn v-else />
 </template>
-
 <script setup>
-//
+import { reactive, ref } from "vue";
+import { useAppStore } from "@/store/app";
+import { useRouter } from "vue-router";
+import isLoggedIn from "@/components/IsLoggedIn.vue";
+
+const loginForm = reactive({
+  account: "admin",
+  password: "vuetify",
+});
+
+const router = useRouter();
+
+const loading = ref(false);
+const appStore = useAppStore();
+
+async function login() {
+  loading.value = true;
+  const { success } = await appStore.signInWithPassword({ ...loginForm });
+  if (success) {
+    appStore.isLoggedIn = true;
+    router.push("/secure");
+  }
+}
 </script>
