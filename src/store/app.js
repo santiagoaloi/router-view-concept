@@ -23,9 +23,10 @@ export const useAppStore = defineStore("app", {
           const validCredentials = verifyCredentials();
 
           resolve({ success: validCredentials });
-        }, 2000); // Wait for 10 seconds (10000 milliseconds)
+        }, 2000); // Wait for 2 seconds (2000 milliseconds)
       });
     },
+
     logout() {
       this.isLoggedIn = false;
       this.router.push("/");

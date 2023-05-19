@@ -45,7 +45,9 @@ const appStore = useAppStore();
 
 async function login() {
   loading.value = true;
-  const { success } = await appStore.signInWithPassword({ ...loginForm });
+  const { success } = await appStore.signInWithPassword({
+    ...loginForm,
+  });
   if (success) {
     appStore.isLoggedIn = true;
     router.push("/secure");
